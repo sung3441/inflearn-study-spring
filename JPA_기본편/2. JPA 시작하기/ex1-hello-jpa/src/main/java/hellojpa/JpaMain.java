@@ -23,13 +23,9 @@ public class JpaMain {
 
             Member member = new Member();
             member.setUsername("memberA");
-            member.setTeam(team);
             em.persist(member);
 
-            Member memberB = new Member();
-            member.setUsername("memberB");
-            member.setTeam(team);
-            em.persist(memberB);
+            team.addMember(member);
 
             em.flush();
             em.clear();
@@ -37,9 +33,11 @@ public class JpaMain {
             Member findMember = em.find(Member.class, member.getId());
             List<Member> members = findMember.getTeam().getMembers();
 
+            System.out.println("==========================");
             for (Member m : members) {
                 System.out.println("m = " + m.getUsername());
             }
+            System.out.println("==========================");
 
             tx.commit();
         } catch (Exception e) {
