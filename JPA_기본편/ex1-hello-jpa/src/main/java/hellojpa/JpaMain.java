@@ -18,22 +18,16 @@ public class JpaMain {
         tx.begin();
 
         try {
-            Child childA = new Child();
-            Child childB = new Child();
+            Address address = new Address("city", "street", "zipcode");
 
-            Parent parent = new Parent();
+            Member memberA = new Member();
+            memberA.setUsername("MemberA");
+            memberA.setHomeAddress(address);
+            em.persist(memberA);
 
-            parent.addChild(childA);
-            parent.addChild(childB);
+            Address newAddress = new Address("new city", address.getStreet(), address.getZipcode());
 
-            em.persist(parent);
-
-            em.flush();
-            em.clear();
-
-            Parent findParent = em.find(Parent.class, parent.getId());
-
-            em.remove(findParent);
+            memberA.setHomeAddress(newAddress);
 
             tx.commit();
         } catch (Exception e) {
