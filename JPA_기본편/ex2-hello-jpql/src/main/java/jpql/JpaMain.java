@@ -19,10 +19,12 @@ public class JpaMain {
             member.setAge(30);
             em.persist(member);
 
-            Member findMember = em.createQuery("select m from Member m where m.username = :username", Member.class)
-                    .setParameter("username", "member")
-                    .getSingleResult();
-            System.out.println("findMember = " + findMember.getUsername());
+            List<Team> result1 = em.createQuery("select t from Member m join m.team t", Team.class)
+                    .getResultList();
+
+            // 여러 값 조회
+            List<MemberDto> result2 = em.createQuery("select new jpql.MemberDto(m.username, m.age) from Member m", MemberDto.class)
+                    .getResultList();
 
             tx.commit();
         } catch (Exception e) {
