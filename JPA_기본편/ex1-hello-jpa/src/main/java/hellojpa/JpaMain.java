@@ -18,16 +18,16 @@ public class JpaMain {
         tx.begin();
 
         try {
-            Address address = new Address("city", "street", "zipcode");
 
-            Member memberA = new Member();
-            memberA.setUsername("MemberA");
-            memberA.setHomeAddress(address);
-            em.persist(memberA);
+            Book book = new Book();
+            book.setName("책 A");
+            book.setAuthor("조성일");
+            em.persist(book);
 
-            Address newAddress = new Address("new city", address.getStreet(), address.getZipcode());
+            Item findBook = em.createQuery("select i from Item i where type(i) = Book", Item.class)
+                    .getSingleResult();
 
-            memberA.setHomeAddress(newAddress);
+            System.out.println("findBook = " + findBook);
 
             tx.commit();
         } catch (Exception e) {

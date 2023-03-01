@@ -14,25 +14,26 @@ public class JpaMain {
         tx.begin();
 
         try {
-            Member member = new Member();
-            member.setUsername("member");
-            member.setAge(30);
-            em.persist(member);
+            Member member1 = new Member();
+            member1.setUsername("관리자A");
+            em.persist(member1);
+
+            Member member2 = new Member();
+            member2.setUsername("관리자B");
+            em.persist(member2);
 
             em.flush();
             em.clear();
 
-            List<Member> members = em.createQuery("select m from Member m order by m.age desc", Member.class)
-                    .setFirstResult(0)
-                    .setMaxResults(10)
-                    .getResultList();
+            String query = "select function('group_concat', m.username) from Member m";
+            String result = em.createQuery(query, String.class)
+                    .getSingleResult();
 
-            for (Member m : members) {
-
-            }
+            System.out.println("result = " + result);
 
             tx.commit();
         } catch (Exception e) {
+            e.printStackTrace();
             tx.rollback();
         } finally {
             em.close();

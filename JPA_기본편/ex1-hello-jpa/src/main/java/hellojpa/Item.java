@@ -13,4 +13,20 @@ public abstract class Item { // 슈퍼 테이블은 추상 클래스로 생성
     private String name;
 
     private int price;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
 }
