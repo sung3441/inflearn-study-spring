@@ -1,8 +1,6 @@
 package jpql;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.List;
 
 public class JpaMain {
 
@@ -41,18 +39,14 @@ public class JpaMain {
             em.flush();
             em.clear();
 
-            String query = "select t from Team t join fetch t.members";
+            String query = "update Member m set m.username = :username where m.username = '회원1'";
 
             // 이 시점에 Team은 프록시 객체가 아니라 엔티티가 담기게 됨, 데이터 전부 채워져 있음
-            List<Team> resultList = em.createQuery(query, Team.class)
-                    .getResultList();
+            int resultCount = em.createQuery(query)
+                    .setParameter("username", "회원11")
+                    .executeUpdate();
 
-            for (Team t : resultList) {
-                System.out.println("t.getName() = " + t.getName());
-                for (Member m : t.getMembers()) {
-                    System.out.println("m.getUsername() = " + m.getUsername());
-                }
-            }
+            System.out.println("resultCount = " + resultCount);
 
             tx.commit();
         } catch (Exception e) {
