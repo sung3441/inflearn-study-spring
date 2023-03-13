@@ -18,7 +18,7 @@ public class ItemRepository {
             em.persist(item);
             return;
         }
-        em.merge(item);
+        em.merge(item); // 준영속 상태 엔티티를 영속 상태로 변경
     }
 
     public Item findOne(Long id) {
