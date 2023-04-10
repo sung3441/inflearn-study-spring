@@ -12,6 +12,7 @@ spring:
       hibernate:
 #        show_sql: true
         format_sql: true
+        default_batch_fetch_size: 100 # 컬렉션과 관련된 데이터를 조회 시 n건 만큼 데이터 갯수를 미리 가져옴
 
 logging.level:
   org.hibernate.SQL: debug
