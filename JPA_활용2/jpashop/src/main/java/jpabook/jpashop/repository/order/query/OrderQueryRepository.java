@@ -1,10 +1,13 @@
 package jpabook.jpashop.repository.order.query;
 
+import jpabook.jpashop.domain.Order;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -20,6 +23,39 @@ public class OrderQueryRepository {
             o.setOrderItems(orderItems);
         });
         return result;
+    }
+
+    public List<OrderQueryDto> findAllByDto_optimization() {
+        List<OrderQueryDto> orders = findOrders(); // query 1번
+
+        List<Long> orderIds = toOrderIds(orders);
+
+        List<OrderItemQueryDto> orderItems = findOrderItemMap(orderIds);
+
+        Map<Long, List<OrderItemQueryDto>> orderItemMap = orderItems.stream()
+                .collect(Collectors.groupingBy(OrderItemQueryDto::getOrderId));
+
+        orders.forEach(o -> o.setOrderItems(orderItemMap.get(o.getOrderId())));
+        return orders;
+    }
+
+    private List<OrderItemQueryDto> findOrderItemMap(List<Long> orderIds) {
+        List<OrderItemQueryDto> orderItems = em.createQuery( // query 1번
+                        "select new jpabook.jpashop.repository.order.query.OrderItemQueryDto(oi.order.id, i.name, oi.orderPrice, oi.count)" +
+                                " from OrderItem oi" +
+                                " join oi.item i" +
+                                " where oi.order.id in :orderIds", OrderItemQueryDto.class
+                )
+                .setParameter("orderIds", orderIds)
+                .getResultList();
+        return orderItems;
+    }
+
+    private List<Long> toOrderIds(List<OrderQueryDto> orders) {
+        List<Long> orderIds = orders.stream()
+                .map(o -> o.getOrderId())
+                .collect(Collectors.toList());
+        return orderIds;
     }
 
     private List<OrderItemQueryDto> findOrderItems(Long orderId) {
@@ -41,4 +77,15 @@ public class OrderQueryRepository {
                 .getResultList();
     }
 
+    public List<OrderFlatDto> findAllByDto_flat() { // query 총 1번, 페이징 불가능, DB에서 가져오는 데이터의 양에 따라 v5보다 느릴 수 있음
+        return em.createQuery(
+                "select new jpabook.jpashop.repository.order.query.OrderFlatDto" +
+                        "(o.id, m.name, o.orderDate, o.status, d.address, i.name, oi.orderPrice, oi.count)" +
+                        " from Order o" +
+                        " join o.member m" +
+                        " join o.delivery d" +
+                        " join o.orderItems oi" +
+                        " join oi.item i", OrderFlatDto.class
+        ).getResultList();
+    }
 }
