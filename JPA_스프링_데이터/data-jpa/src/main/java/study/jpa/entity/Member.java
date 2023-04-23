@@ -12,6 +12,7 @@ import javax.persistence.*;
         name = "Member.findByUsername",
         query = "select m from Member m where m.username=:username"
 )
+
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
 
