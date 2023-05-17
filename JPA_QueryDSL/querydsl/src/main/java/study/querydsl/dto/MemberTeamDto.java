@@ -4,7 +4,7 @@ import com.querydsl.core.annotations.QueryProjection;
 import lombok.Data;
 
 @Data
-public class MemberTeamDTo {
+public class MemberTeamDto {
 
     private Long memberId;
     private String username;
@@ -13,7 +13,7 @@ public class MemberTeamDTo {
     private String teamName;
 
     @QueryProjection
-    public MemberTeamDTo(Long memberId, String username, int age, Long teamId, String teamName) {
+    public MemberTeamDto(Long memberId, String username, int age, Long teamId, String teamName) {
         this.memberId = memberId;
         this.username = username;
         this.age = age;
