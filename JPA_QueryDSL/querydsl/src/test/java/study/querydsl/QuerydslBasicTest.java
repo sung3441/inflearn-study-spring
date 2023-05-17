@@ -45,7 +45,7 @@ public class QuerydslBasicTest {
 
     @BeforeEach
     public void before() {
-         queryFactory = new JPAQueryFactory(em);
+        queryFactory = new JPAQueryFactory(em);
 
         Team teamA = new Team("teamA");
         Team teamB = new Team("teamB");
